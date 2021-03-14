@@ -40,11 +40,27 @@ public class NonConflictingAppointmentList implements Iterable<Appointment> {
     }
 
     /**
+     * Returns true if the list contains an equivalent appointment as the given argument.
+     */
+    public boolean editContains(Appointment toCheck) {
+        requireNonNull(toCheck);
+        return internalList.stream().allMatch(toCheck::equals);
+    }
+
+    /**
      * Returns true if the list contains appointments that are in conflict with {@code toCheck}
      */
     public boolean hasConflict(Appointment toCheck) {
         requireNonNull(toCheck);
         return internalList.stream().anyMatch(toCheck::hasConflict);
+    }
+
+    /**
+     * Returns true if the list contains appointments that are in conflict with {@code toCheck}
+     */
+    public boolean hasEditConflict(Appointment toCheck) {
+        requireNonNull(toCheck);
+        return internalList.stream().allMatch(toCheck::hasEditConflict);
     }
 
     /**
@@ -98,7 +114,7 @@ public class NonConflictingAppointmentList implements Iterable<Appointment> {
             throw new AppointmentNotFoundException();
         }
 
-        if (hasConflict(editedAppointment)) {
+        if (hasEditConflict(editedAppointment)) {
             throw new AppointmentConflictException();
         }
 
